@@ -1,7 +1,7 @@
 /**
  * let  confined to specfic scope
  * var  global scope --- we should not be using Var keyword for variable declaration.
- * const --- one the value has assigned it cannot be changed.
+ * const --- once the value has assigned it cannot be changed.
  *
  * <Variable Declaration Keyword> <VariableName> e.g let a, var b, const c = 10
  */
@@ -24,5 +24,6 @@
 
 const c =10 ;
 
+let b ;
 
 c=5
