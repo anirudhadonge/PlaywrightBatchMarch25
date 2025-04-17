@@ -3,6 +3,8 @@ import {test,expect} from '@playwright/test'
 
 test("Navigation to Installation Page",async({page})=>{
     await page.goto('https://playwright.dev/');
-    await page.locator(".getStarted_Sjon").click();
+    let getStarted = await page.locator(".getStarted_Sjon");
+    getStarted.screenshot();
+    getStarted.click();
     await expect(page.locator(".theme-doc-markdown.markdown h1")).toHaveText("Installation");
 })
