@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test'
+import {test,expect, Page, BrowserContext} from '@playwright/test'
 // Auto wait
 
 test("Navigation to Installation Page",async({page})=>{
@@ -75,7 +75,7 @@ test('Uploading files',async({page})=>{
     fileCs.setFiles("C:\\UploadFiles\\1000_F_561609331_cmOdHBvlRGhWqPZuB1QBLLlc6nQ1m1eq.jpg");
 });
 
-test.only('Interacting with Iframe/Frames',async({page})=>{
+test('Interacting with Iframe/Frames',async({page})=>{
     await page.goto("https://the-internet.herokuapp.com/");
     await page.locator('[href="/frames"]').click();
     await page.locator('[href="/nested_frames"]').click();
@@ -86,3 +86,54 @@ test.only('Interacting with Iframe/Frames',async({page})=>{
     // const frameLocator = page.frameLocator('#mce_0_ifr');
     // await expect(frameLocator.locator('#tinymce p')).toHaveText('Your content goes here.');
 })
+
+test('Uploading multiple files',async({page})=>{
+    await page.goto("https://www.patternfly.org/components/file-upload/multiple-file-upload/");
+    let files:string[] =['C:/UploadFiles/1000_F_561609331_cmOdHBvlRGhWqPZuB1QBLLlc6nQ1m1eq.jpg','C:/UploadFiles/java.png']
+    await uploadFile(page,"[data-ouia-component-id='OUIA-Generated-Button-secondary-2']",files);
+    expect(await page.locator(".pf-v6-c-multiple-file-upload__status-item-progress-text").count()).toEqual(2);
+})
+
+async function uploadFile(page:Page, locator:string,files:string[]){
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await page.locator(locator).click();
+    const fileChoose = await fileChooserPromise
+    await fileChoose.setFiles(files)
+}
+
+
+test("Download file test",async({page})=>{
+    await page.goto("https://the-internet.herokuapp.com/");
+    await page.locator('[href="/download"]').click();
+    await downloadFile(page,'webdriverIO.png','./download/' )
+})
+
+async function downloadFile(page:Page,locator:string,path:string){
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByText(locator).click();
+    const download = await downloadPromise;
+    await download.saveAs(path+download.suggestedFilename())
+}
+
+test('Hover test',async({page})=>{
+    await page.goto("https://the-internet.herokuapp.com/");
+    await page.locator('[href="/hovers"]').click();
+    await page.locator('.figure img').nth(0).hover();
+    await expect(page.locator(".figcaption h5").nth(0)).toHaveText("name: user1");
+})
+
+test.only("Window handle test",async({page, context})=>{
+    //const book = await context.newPage();
+    await page.goto("https://the-internet.herokuapp.com/");
+    await page.locator('[href="/windows"]').click();
+    const newPage = await newPageClick(context,page,'[href="/windows/new"]')
+    await expect(newPage.locator(".example h3")).toHaveText("New Window");
+    await expect(page.locator(".example h3")).toHaveText("Opening a new window");
+    await page.goto("https://www.google.com");
+})
+
+async function newPageClick(context:BrowserContext,page:Page,locator:string):Promise<Page>{
+    const pagePromise = context.waitForEvent('page');
+    await page.locator(locator).click();
+    return await pagePromise;
+}
