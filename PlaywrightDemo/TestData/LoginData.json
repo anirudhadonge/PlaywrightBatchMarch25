@@ -1,0 +1,10 @@
+{
+    "QA":{
+        "username":"tomsmith",
+        "password":"SuperSecretPassword!"
+    },
+    "DEV":{
+         "username":"tomsmith",
+        "password":"SuperSecretPassword!"
+    }
+}

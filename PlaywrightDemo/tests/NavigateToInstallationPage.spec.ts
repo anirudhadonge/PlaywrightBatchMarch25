@@ -1,4 +1,4 @@
-import { test, expect, Page, BrowserContext, Locator } from "@playwright/test";
+import { test, expect, Page, BrowserContext, Locator, TestInfo } from "@playwright/test";
 // Auto wait
 
 test.beforeAll('Before all for part1',async()=>{
@@ -49,7 +49,7 @@ test.describe('All test were execute on heroKuapp part1',async()=>{
   test.beforeEach('Navigation to HeroKuApp',async({page})=>{
     console.log('This is a before each block');
     await test.step('Navigate to Hero Kuapp',async()=>{
-      await page.goto("https://the-internet.herokuapp.com/");
+      await page.goto("/");
     })
     
   })
@@ -62,33 +62,11 @@ test.describe('All test were execute on heroKuapp part1',async()=>{
     console.log('After All on Describe block');
   })
 
-  test.only("@smoke,@p1 Interacting with Input fields", async ({ page }) => {
-    test.slow();
-    let text = 'SuperSecretPassword!'; 
-    await test.step('Open the Authencation form',async()=>{
-      await page.getByText("Form Authentication").click();
-    }) 
-    
-    let userNameField = page.locator("#username");
-    let passwordField = page.locator("#password");
-    await test.step('Enter username',async()=>{
-      await page
-      .locator("#username")
-      .pressSequentially("tomsmith", { delay: 300 });
-    })
-   
-    await test.step('Enter Password',async()=>{
-      await page.locator("#password").fill(text);
-    })
-    
-    await test.step('Click on Login',async()=>{
-      await page.locator(".radius").click();
-    })
-    
-    await test.step('Validate login is successfull',async()=>{
-      await expect(page.locator('.subheader')).toHaveText('Welcome to the Secure Area. When you are done click logout below.');
-    })
-  });
+  
+  async function attachScreenShot(testInfo:TestInfo, page:Page):Promise<void>{
+    const screenshot = await page.screenshot();
+    await testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' });
+  }
   //selectOptions
   // using the Value Attribue
   // using label
@@ -171,12 +149,6 @@ test.describe('All test were execute on heroKuapp part1',async()=>{
     await downloadFile(page, "webdriverIO.png", "./download/");
   });
   
-  async function downloadFile(page: Page, locator: string, path: string) {
-    const downloadPromise = page.waitForEvent("download");
-    await page.getByText(locator).click();
-    const download = await downloadPromise;
-    await download.saveAs(path + download.suggestedFilename());
-  }
-  
+ 
 })
 
