@@ -10,7 +10,7 @@ test.afterAll('THis is After all on the file Level',async()=>{
 })
 
 
-test("Navigation to Installation Page", async ({ page }) => {
+test("@Regression Navigation to Installation Page", async ({ page }) => {
   await page.goto("https://playwright.dev/");
   let getStarted = await page.locator("");
   getStarted.screenshot();
@@ -20,7 +20,7 @@ test("Navigation to Installation Page", async ({ page }) => {
   );
 });
 
-test("Example for GetByRole method", async ({ page }) => {
+test("@Regression Example for GetByRole method", async ({ page }) => {
   await page.goto("https://selectorshub.com/xpath-practice-page/");
   //await page.locator('[href="/checkboxes"]').click();
   //await expect(page.getByLabel("Password")).toBeVisible();
